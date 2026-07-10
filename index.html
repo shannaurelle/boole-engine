@@ -1,18 +1,31 @@
 <html>
 <style>
-
+body{
+    background-color: #c2e6b0;
+    font-family: Verdana, Arial. sans-serif;
+}
 main,body{
     display: flex;
     justify-content: center;
     align-items: center;
 }
-h1{
+h1,p{
     text-align: center;
 }
 #ans-panel{
-    width: 250px;
-    height: 180px;
-    border: 2px dotted black;
+    width: 210px;
+    height: 1280px;
+    border: 2px dashed black;
+    border-radius: 12px;
+    padding: 1em;
+}
+button,input{
+    padding: 1em;
+    border-radius: 12px;
+}
+td,th{
+    padding: 0.5em;
+    text-align: center;
 }
 </style>
 
@@ -37,10 +50,12 @@ h1{
 <br>
 
 <div id="ans-panel">
-<p> Given Expression</p>
+<p> Expanded Expression</p>
 <math id="given" display="block"> </math>
-<p> Simplified Expression</p>
-<em id="answer"> </em>
+<p> Variables </p>
+<math display="block" id="variables"> </math>
+<p> Binary Encoding </p>
+<math display="block" id="encoding"> </math>
 </div>
 
 </div>
@@ -50,14 +65,14 @@ h1{
 </body>
 
 <script>
-// helper functions
+
 function render_math(string) {
 // Define the MathML XML namespace
-const MATHML_NS = "http://www.w3.org/1998/Math/MathML";
-
+const MATHML_NS   = "http://www.w3.org/1998/Math/MathML";
+// remove spaces
+var filter2       = string.replace(/\s/g,"");
 // split the terms by the plus
-var filter2 = string.replace(/\s/g,"");
-var strings = filter2.split("+");
+var strings       = filter2.split("+");
 // Create the root <math> tag
 const mathElement = document.createElementNS(MATHML_NS, "math");
 mathElement.setAttribute("display", "block"); // Blocks display on a new line
@@ -65,11 +80,12 @@ mathElement.setAttribute("display", "block"); // Blocks display on a new line
 // for each string, just convert them to MathML
 var count = 0;
 for(str of strings){
+
     const raw_expr = str.replace("^","");
-    const monomial = /[a-zA-Z][1-9][0-9]*/g;
-    var monomials = raw_expr.match(monomial);
-    var terms = [];
-    //console.log(monomials);
+    const monomial = /[a-zA-Z]?[1-9][0-9]*/g;
+    var monomials  = raw_expr.match(monomial);
+    var terms      = [];
+
     if(monomials!==null){
         terms = terms.concat(monomials);
     }
@@ -79,7 +95,6 @@ for(str of strings){
             terms = terms.concat(rest.split(""));
     }
     terms = terms.sort();
-    console.log(terms)
     for (term of terms){
         if(term.length == 1){
             var expr = [term, ""];
@@ -87,13 +102,14 @@ for(str of strings){
             var expr = [term.match(/[a-zA-Z]/),term.match(/[1-9][0-9]*/)];
         }
         // Create the superscript container <msup>
-        const msup = document.createElementNS(MATHML_NS, "msup");
+        const msup     = document.createElementNS(MATHML_NS, "msup");
         // Create the base <mi> (identifier like 'x')
-        const mi = document.createElementNS(MATHML_NS, "mi");
+        const mi       = document.createElementNS(MATHML_NS, "mi");
         mi.textContent = expr[0];
         // Create the exponent <mn> (number like '2')
-        const mn = document.createElementNS(MATHML_NS, "mn");
+        const mn       = document.createElementNS(MATHML_NS, "mn");
         mn.textContent = expr[1];
+
         // Assemble the DOM structure
         msup.appendChild(mi);
         msup.appendChild(mn);
@@ -116,15 +132,89 @@ var expression = mathElement.innerHTML;
 return expression;
 
 }
-function isEnglishLetter(char) {
-  return /^[a-z]$/i.test(char);
-}
-function submit(){
-var given = document.getElementById('bar').value;
-document.getElementById('given').innerHTML = render_math(given);
-// TODO: algorithm here
-document.getElementById('answer').innerHTML = given;
 
+function unique_letters(string){
+    letters = string.match(/[a-zA-Z]/g);
+    unique = [];
+    for(letter of letters){
+        if(!(letter in unique)){
+            unique.push(letter);
+        }
+    }
+    return unique.join(",");
+}
+
+function decimaltoBinary(num){
+    if(num >= 0){
+        return Math.abs(num).toString(2);
+    }
+    return 0;
+}
+
+// this function expects a string composed
+// of letters separated by commas
+function generate_encoding_table(string){
+const table = document.createElement("table");
+const thead = document.createElement("thead");
+const tbody = document.createElement("tbody");
+
+if(string.length > 0){
+    // make thead
+    const thead    = document.createElement("thead");
+    const tr_h     = document.createElement("tr");
+    const th_name  = document.createElement("th");
+    const th_val   = document.createElement("th");
+    th_name.textContent = "Term";
+    th_val.textContent = "Encoding";
+    tr_h.appendChild(th_name);
+    tr_h.appendChild(th_val);
+    thead.appendChild(tr_h);
+    table.appendChild(thead);
+
+    // make tbody
+    const variables = string.split(",");
+    for(let i = 0; i < (1 << variables.length); i++){
+
+        const encoding = decimaltoBinary(i);
+        var name       = "";
+
+        // make the value using the integer encoding
+        if(i == 0){ name = "1"; }
+        else{
+            for(let j = 0; j < variables.length; j++){
+                if(i & (1 << j)){
+                    name += variables[j];
+                }
+            }
+        }
+
+        const tr                = document.createElement("tr");
+        const td_name           = document.createElement("td");
+        const td_encoding       = document.createElement("td");
+        td_name.textContent     = name;
+        td_encoding.textContent = encoding;
+
+        tr.appendChild(td_name);
+        tr.appendChild(td_encoding);
+        tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    return table;
+}
+
+}
+
+function submit(){
+
+var given = document.getElementById('bar').value;
+
+document.getElementById('given').innerHTML     = render_math(given);
+document.getElementById("variables").innerHTML = unique_letters(given);
+
+document.getElementById('encoding').appendChild(generate_encoding_table(unique_letters(given)));
+
+
+// TODO: algorithm for answers
 }
 
 </script>
