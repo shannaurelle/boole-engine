@@ -56,8 +56,8 @@ function render_math(string) {
 const MATHML_NS = "http://www.w3.org/1998/Math/MathML";
 
 // split the terms by the plus
-var filtered = string.replace(/\s/g,"");
-var strings = filtered.split("+");
+var filter2 = string.replace(/\s/g,"");
+var strings = filter2.split("+");
 // Create the root <math> tag
 const mathElement = document.createElementNS(MATHML_NS, "math");
 mathElement.setAttribute("display", "block"); // Blocks display on a new line
@@ -65,27 +65,26 @@ mathElement.setAttribute("display", "block"); // Blocks display on a new line
 // for each string, just convert them to MathML
 var count = 0;
 for(str of strings){
-    const monomial = /[a-zA-Z]\^[1-9][0-9]*/g;
-    var monomials = str.match(monomial);
-    if(monomials){
-        // TODO: remove the monomials with exponents
-        var rest = str;
-        for (m in monomials) {
-            console.log(rest.replace(m,""));
-            rest = rest.replace(m,"")
-        }
-        //console.log(rest);
-        monomials.concat(rest);
+    const raw_expr = str.replace("^","");
+    const monomial = /[a-zA-Z][1-9][0-9]*/g;
+    var monomials = raw_expr.match(monomial);
+    var terms = [];
+    //console.log(monomials);
+    if(monomials!==null){
+        terms = terms.concat(monomials);
     }
-    else{
-        monomials = str;
+    var noExponents = raw_expr.match(/(?:[a-zA-Z](?!\d))+/g);
+    if(noExponents!==null){
+            var rest = noExponents.join("")
+            terms = terms.concat(rest.split(""));
     }
-    var terms = monomials;//.concat(rest);
+    terms = terms.sort();
+    console.log(terms)
     for (term of terms){
-        if(term.match("^")!==null){
-            var expr = term.split("^");
-        }else{
+        if(term.length == 1){
             var expr = [term, ""];
+        }else{
+            var expr = [term.match(/[a-zA-Z]/),term.match(/[1-9][0-9]*/)];
         }
         // Create the superscript container <msup>
         const msup = document.createElementNS(MATHML_NS, "msup");
