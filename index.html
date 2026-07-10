@@ -1,0 +1,69 @@
+<html>
+<style>
+
+main,body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h1{
+    text-align: center;
+}
+#ans-panel{
+    width: 250px;
+    height: 180px;
+    border: 2px dotted black;
+}
+</style>
+
+<body>
+
+<main style="width: 250px;">
+
+<div>
+<h1> Boole Engine </h1>
+
+<div> <em> Write the expression to simplify below </em> </div>
+
+
+<br>
+
+<div>
+<input style="width:250px;" id="bar" type="text" />
+<br>
+<button style="width:250px;" type="button" onclick="submit()">Simplify
+</div>
+
+<br>
+
+<div id="ans-panel">
+<p> Given Expression</p>
+<em id="given"> </em>
+<p> Simplified Expression</p>
+<em id="answer"> </em>
+</div>
+
+</div>
+
+</main>
+
+</body>
+
+<script>
+// helper functions
+function isEnglishLetter(char) {
+  return /^[a-z]$/i.test(char);
+}
+function submit(){
+var given = document.getElementById('bar').value;
+document.getElementById('given').innerHTML = given;
+// TODO: algorithm here
+document.getElementById('answer').innerHTML = given;
+
+}
+
+</script>
+
+</html>
+
+
