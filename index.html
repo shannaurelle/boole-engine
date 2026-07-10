@@ -38,7 +38,7 @@ h1{
 
 <div id="ans-panel">
 <p> Given Expression</p>
-<em id="given"> </em>
+<math id="given" display="block"> </math>
 <p> Simplified Expression</p>
 <em id="answer"> </em>
 </div>
@@ -51,12 +51,78 @@ h1{
 
 <script>
 // helper functions
+function render_math(string) {
+// Define the MathML XML namespace
+const MATHML_NS = "http://www.w3.org/1998/Math/MathML";
+
+// split the terms by the plus
+var filtered = string.replace(/\s/g,"");
+var strings = filtered.split("+");
+// Create the root <math> tag
+const mathElement = document.createElementNS(MATHML_NS, "math");
+mathElement.setAttribute("display", "block"); // Blocks display on a new line
+
+// for each string, just convert them to MathML
+var count = 0;
+for(str of strings){
+    const monomial = /[a-zA-Z]\^[1-9][0-9]*/g;
+    var monomials = str.match(monomial);
+    if(monomials){
+        // TODO: remove the monomials with exponents
+        var rest = str;
+        for (m in monomials) {
+            console.log(rest.replace(m,""));
+            rest = rest.replace(m,"")
+        }
+        //console.log(rest);
+        monomials.concat(rest);
+    }
+    else{
+        monomials = str;
+    }
+    var terms = monomials;//.concat(rest);
+    for (term of terms){
+        if(term.match("^")!==null){
+            var expr = term.split("^");
+        }else{
+            var expr = [term, ""];
+        }
+        // Create the superscript container <msup>
+        const msup = document.createElementNS(MATHML_NS, "msup");
+        // Create the base <mi> (identifier like 'x')
+        const mi = document.createElementNS(MATHML_NS, "mi");
+        mi.textContent = expr[0];
+        // Create the exponent <mn> (number like '2')
+        const mn = document.createElementNS(MATHML_NS, "mn");
+        mn.textContent = expr[1];
+        // Assemble the DOM structure
+        msup.appendChild(mi);
+        msup.appendChild(mn);
+        mathElement.appendChild(msup);
+    }
+    if(strings.length > (count+1)) {
+        const mo = document.createElementNS(MATHML_NS, "mo");
+        mo.textContent = "+";
+        mathElement.appendChild(mo);
+        count++;
+    }
+    else{
+         count = 0;
+    }
+
+}
+
+var expression = mathElement.innerHTML;
+
+return expression;
+
+}
 function isEnglishLetter(char) {
   return /^[a-z]$/i.test(char);
 }
 function submit(){
 var given = document.getElementById('bar').value;
-document.getElementById('given').innerHTML = given;
+document.getElementById('given').innerHTML = render_math(given);
 // TODO: algorithm here
 document.getElementById('answer').innerHTML = given;
 
