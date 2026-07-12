@@ -164,14 +164,37 @@ function decimaltoBinary(num){
     return 0;
 }
 
+function generate_encoding(string){
+    // encoding is a list of pairs of (key, value)
+    let encoding = [];
+    const variables = string.split(",");
+    for(let i = 0; i < (1 << variables.length); i++){
+
+        const binary_code = decimaltoBinary(i);
+        let name = "";
+        // make the name via power set algorithm
+        if(i == 0){ name = "1"; }
+        else{
+            for(let j = 0; j < variables.length; j++){
+                if(i & (1 << j)){
+                    name += variables[j];
+                }
+            }
+        }
+        let new_row = [name,binary_code];
+        encoding.push(new_row);
+    }
+    return encoding;
+}
+
 // this function expects a string composed
 // of letters separated by commas
-function generate_encoding_table(string){
+function generate_encoding_table(encoding){
 const table = document.createElement("table");
 const thead = document.createElement("thead");
 const tbody = document.createElement("tbody");
 
-if(string.length > 0){
+if(encoding.length > 0){
     // make thead
     const thead    = document.createElement("thead");
     const tr_h     = document.createElement("tr");
@@ -185,27 +208,16 @@ if(string.length > 0){
     table.appendChild(thead);
 
     // make tbody
-    const variables = string.split(",");
-    for(let i = 0; i < (1 << variables.length); i++){
+    for(let i = 0; i < encoding.length; i++){
 
-        const encoding = decimaltoBinary(i);
-        var name       = "";
-
-        // make the value using the integer encoding
-        if(i == 0){ name = "1"; }
-        else{
-            for(let j = 0; j < variables.length; j++){
-                if(i & (1 << j)){
-                    name += variables[j];
-                }
-            }
-        }
+        let name = encoding[i][0];
+        let code = encoding[i][1];
 
         const tr                = document.createElement("tr");
         const td_name           = document.createElement("td");
         const td_encoding       = document.createElement("td");
         td_name.textContent     = name;
-        td_encoding.textContent = encoding;
+        td_encoding.textContent = code;
 
         tr.appendChild(td_name);
         tr.appendChild(td_encoding);
@@ -220,9 +232,8 @@ if(string.length > 0){
 function submit(){
 
 var given = document.getElementById('bar').value;
-
-document.getElementById("variables").innerHTML = unique_letters(given);
-
+var unique_variables = unique_letters(given);
+document.getElementById("variables").innerHTML = unique_variables;
 console.log(given);
 var expression = new BitwiseRecursiveParser(given);
 var result = expression.parse();
@@ -230,7 +241,8 @@ console.log("Structure:");
 console.log(result);
 var simplifiedExpression = render_math(BitwiseRecursiveParser.format_output(result));
 document.getElementById('simple').innerHTML = simplifiedExpression;
-document.getElementById('encoding').appendChild(generate_encoding_table(unique_letters(given)));
+document.getElementById('encoding').appendChild(
+         generate_encoding_table(generate_encoding(unique_variables)));
 
 
 // TODO: algorithm for answers
