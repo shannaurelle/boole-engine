@@ -103,24 +103,3 @@ class BitwiseRecursiveParser {
     }
 }
 
-/*
- * Test Cases for the Parser in Python
-expr_str = "1+p(p+q)"
-
-parser = BitwiseRecursiveParser(expr_str)
-expanded_structure = parser.parse()
-
-print("Internal Set Tree Representation:")
-print(expanded_structure)
-# Output: {frozenset({'apple', 'banana'}), frozenset({5, 'apple'})}
-
-print("\nFormatted Expression (where ^ is XOR and | is OR):")
-print(BitwiseRecursiveParser.format_output(expanded_structure))
-# Output: {5|apple} ^ {apple|banana}
-print("\n")
-expr_str = "(a + b)c"
-print("Original Expression: ",expr_str)
-parser = BitwiseRecursiveParser(expr_str)
-print("Simplified:", BitwiseRecursiveParser.format_output(parser.parse()))
-# Output: {a} ^ {b}
-*/
