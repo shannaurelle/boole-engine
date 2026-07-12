@@ -49,10 +49,22 @@ class BitwiseRecursiveParser {
         }else if(token && /[a-zA-Z0-9]+$/i.test(token)) {
             let v = this.consume();
             // Wrap a single term inside a frozen set, and place it in the main set
-            if(/[1-9][0-9]+/i.test(v)) {
-                return new FrozenSet([parseInt(v)]); // numeric literal
+            // TODO: add encoding to turn all expressions into integer codes
+            if(/\d+/i.test(v)) {
+                return new FrozenSet([v]); // numeric literal
             }
-            return new FrozenSet([v]); // string variable
+            else{
+                // accept two or more letters
+                let new_list = [v];
+                while(this.peek() && /[a-zA-Z]+$/i.test(this.peek())){
+                    let new_token = this.consume();
+                    new_list.push(new_token);
+                }
+                console.log("Variable list: ")
+                console.log(new_list)
+                return new FrozenSet([new_list.join("")]); // string variable
+            }
+
         }
 
         throw new Error(`Unexpected token in factor evaluation: ${token}`);
@@ -62,6 +74,11 @@ class BitwiseRecursiveParser {
         /* Implements Bitwise XOR (Addition).
           In XOR logic, A + A = 0. Symmetric difference clears out duplicates.*
         */
+        console.log("Poly1 before XOR");
+        console.log(poly1);
+        console.log("Poly2 before XOR");
+        console.log(poly2);
+        // TODO: use counting to eliminate terms which has an even frequency
         return poly1.symmetricDifference(poly2);
     }
 
@@ -70,18 +87,19 @@ class BitwiseRecursiveParser {
            Every sub-term is combined using set union (since A OR B handles idempotency).*
          */
         let result = new Set();
-        console.log("Poly1");
+        console.log("Poly1 before OR");
         console.log(poly1);
-        console.log("Poly2");
+        console.log("Poly2 before OR");
         console.log(poly2);
+        // TODO: use bitwise OR to integers to eliminate redundancies due to exponents
         for(let term1 of poly1){
             for(let term2 of poly2){
                 // Set union handles bitwise OR combination perfectly
                 // e.g., frozenset(['A']) | frozenset(['B']) -> frozenset(['A', 'B'])
                 let new_set = new Set();
-                if(term1 !== "1"){ new_set.add(term1); }
-                if(term2 !== "1"){ new_set.add(term2); }
-                result.add(new_set);
+                if(term1 !== '1' && !term2.match(term1) ){ new_set.add(term1); }
+                if(term2 !== '1' && !term1.match(term2) ){ new_set.add(term2); }
+                if(new_set.size > 0) { result.add(new_set); }
             }
         }
         return result;

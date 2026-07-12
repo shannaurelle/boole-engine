@@ -164,13 +164,25 @@ function decimaltoBinary(num){
     return 0;
 }
 
+function remove_exponent(string){
+    let dirt = string.match(/[\^]\d+/g);
+    let result = string;
+    if(dirt){
+        for(let d of dirt){
+            result = result.replace(d,"");
+        }
+    }
+    return result;
+}
+
 function generate_encoding(string){
     // encoding is a list of pairs of (key, value)
     let encoding = [];
     const variables = string.split(",");
     for(let i = 0; i < (1 << variables.length); i++){
 
-        const binary_code = decimaltoBinary(i);
+        // integer code
+        const code = i;
         let name = "";
         // make the name via power set algorithm
         if(i == 0){ name = "1"; }
@@ -181,7 +193,7 @@ function generate_encoding(string){
                 }
             }
         }
-        let new_row = [name,binary_code];
+        let new_row = [name,code];
         encoding.push(new_row);
     }
     return encoding;
@@ -211,7 +223,7 @@ if(encoding.length > 0){
     for(let i = 0; i < encoding.length; i++){
 
         let name = encoding[i][0];
-        let code = encoding[i][1];
+        let code = decimaltoBinary(encoding[i][1]);
 
         const tr                = document.createElement("tr");
         const td_name           = document.createElement("td");
@@ -235,7 +247,7 @@ var given = document.getElementById('bar').value;
 var unique_variables = unique_letters(given);
 document.getElementById("variables").innerHTML = unique_variables;
 console.log(given);
-var expression = new BitwiseRecursiveParser(given);
+var expression = new BitwiseRecursiveParser(remove_exponent(given));
 var result = expression.parse();
 console.log("Structure:");
 console.log(result);
