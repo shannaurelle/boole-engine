@@ -20,9 +20,16 @@ h1,p{
     border-radius: 12px;
     padding: 1em;
 }
+input{
+    width:230px;
+}
+button{
+    width: 246px;
+}
 button,input{
-    padding: 1em;
-    border-radius: 12px;
+    text-align: center;
+    padding: 0.5em;
+    border-radius: 8px;
 }
 td,th{
     padding: 0.5em;
@@ -43,16 +50,18 @@ td,th{
 <br>
 
 <div>
-<input style="width:250px;" id="bar" type="text" />
+<input id="bar" type="text" />
 <br>
-<button style="width:250px;" type="button" onclick="submit()">Simplify
+<button type="button" onclick="submit()">Simplify
 </div>
 
 <br>
 
 <div id="ans-panel">
-<p> Expanded Expression</p>
-<math id="given" display="block"> </math>
+<!-- <p> Expanded Expression</p>
+<math id="given" display="block"> </math> -->
+<p> Simplified Expression </p>
+<math display="block" id="simple"> </math>
 <p> Variables </p>
 <math display="block" id="variables"> </math>
 <p> Binary Encoding </p>
@@ -136,13 +145,16 @@ return expression;
 
 function unique_letters(string){
     letters = string.match(/[a-zA-Z]/g);
-    unique = [];
-    for(letter of letters){
-        if(!(letter in unique)){
-            unique.push(letter);
+    if(letters){
+        unique = new Set();
+        for(letter of letters){
+            if(!unique.has(letter)){
+                unique.add(letter);
+            }
         }
+        return Array.from(unique).join(",");
     }
-    return unique.join(",");
+    return null;
 }
 
 function decimaltoBinary(num){
@@ -209,9 +221,15 @@ function submit(){
 
 var given = document.getElementById('bar').value;
 
-document.getElementById('given').innerHTML     = render_math(given);
 document.getElementById("variables").innerHTML = unique_letters(given);
 
+console.log(given);
+var expression = new BitwiseRecursiveParser(given);
+var result = expression.parse();
+console.log("Structure:");
+console.log(result);
+var simplifiedExpression = render_math(BitwiseRecursiveParser.format_output(result));
+document.getElementById('simple').innerHTML = simplifiedExpression;
 document.getElementById('encoding').appendChild(generate_encoding_table(unique_letters(given)));
 
 
