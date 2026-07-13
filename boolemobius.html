@@ -93,25 +93,77 @@ a{
 <script>
 
 function powerOfTwoBitstringToInt(string) {
-    return parseInt(string, 2);
+    let n = string.length;
+    let result = [];
+    for(let i=0; i < n; i++){
+        result.push(parseInt(string[i]));
+    }
+    return result;
 }
 
-function intToPowerOfTwoBitstring(num) {
-    // 1. Convert to an unsigned 32-bit binary string
-    const binStr = (num >>> 0).toString(2);
+function intToPowerOfTwoBitstring(bitarray) {
+    return bitarray.join("");
+}
 
-    // 2. Calculate the next closest power of two length
-    const len = Math.max(1, 1 << Math.ceil(Math.log2(binStr.length)));
+function generateBooleMobiusMatrix(n) {
+  const size = 1 << n;
+  const matrix = Array.from({ length: size }, () => new Array(size).fill(0));
 
-    // 3. Pad the start of the string with zeros
-    return binStr.padStart(len, '0');
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      // (i & j) === i checks if subset j is a subset of i
+      if ((i & j) === i) {
+        matrix[i][j] = 1;
+      }
+    }
+  }
+  return matrix;
+}
+
+function multiplyMatrices(matrixA, matrixB) {
+    const rowsA = matrixA.length;
+    const colsA = matrixA[0].length;
+    const rowsB = matrixB.length;
+    const colsB = matrixB[0].length;
+
+    // Validate dimensions
+    if (colsA !== rowsB) {
+        throw new Error("Cannot multiply: Columns of A must match Rows of B.");
+    }
+
+    // Initialize result matrix with zeros
+    let result = Array(rowsA).fill(null).map(() => Array(colsB).fill(0));
+
+    // Three nested loops for matrix multiplication
+    for (let i = 0; i < rowsA; i++) {
+        for (let j = 0; j < colsB; j++) {
+            for (let k = 0; k < colsA; k++) {
+                // swapped addition for XOR, multiplication with AND
+                result[i][j] ^= matrixA[i][k] & matrixB[k][j];
+            }
+        }
+    }
+
+    return result;
+}
+
+function boole_mobius_transform(bitarray){
+    let b_a = [bitarray];
+    let n = Math.floor(Math.log2(bitarray.length));
+    let b_t = generateBooleMobiusMatrix(n);
+    return multiplyMatrices(b_a,b_t);
 }
 
 function submit(){
     var given = powerOfTwoBitstringToInt(document.getElementById('bar').value);
     console.log(given);
-    var transformed = intToPowerOfTwoBitstring(given);
-    document.getElementById("transform").innerHTML = transformed;
+    var transformed = boole_mobius_transform(given);
+    console.log("Transformed:")
+    console.log(transformed);
+    // Example for 3 variables (8x8 matrix)
+    const mobiusMatrix = generateBooleMobiusMatrix(3);
+    console.log(mobiusMatrix.map(row => row.join(" ")).join("\n"));
+    document.getElementById("transform").innerHTML = intToPowerOfTwoBitstring(transformed);
 }
 
 </script>
