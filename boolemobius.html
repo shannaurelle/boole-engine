@@ -90,11 +90,14 @@ a{
 </main>
 </body>
 </html>
+
 <script src="booleparserutils.js"></script>
 <script src="boolemobiustransform.js"></script>
 <script>
 
 function submit(){
+    // TODO: make functions for algebraic normal form of a bitstring
+    // TODO: make truth table for the bitstring
     var given = powerOfTwoBitstringToInt(document.getElementById('bar').value);
     console.log(given);
     var transformed = intToPowerOfTwoBitstring(boole_mobius_transform(given));
