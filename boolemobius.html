@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<style>
+body{
+    background-color: #c2e6b0;
+    font-family: Verdana, Arial. sans-serif;
+}
+main,body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h1,p, em{
+    text-align: center;
+}
+#header{
+    padding: 1em;
+}
+#ans-panel{
+    width: 100%;
+    height: 1280px;
+    border: 2px dashed black;
+    border-radius: 12px;
+    padding: 1em;
+}
+#search-panel{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+input{
+    min-width:230px;
+    max-width: 80ch;
+}
+button{
+    min-width: 246px;
+    max-width: 80ch;
+}
+button,input{
+    text-align: center;
+    padding: 0.5em;
+    border-radius: 8px;
+}
+td,th{
+    padding: 0.5em;
+    text-align: center;
+}
+a{
+    text-decoration: none;
+    color: gray;
+}
+</style>
+<body>
+<main>
+
+<div>
+
+<div id="header">
+<h1> Boole Mobius Transform Engine </h1>
+
+<br>
+
+<div> <em> Write the truth table or the algebraic normal form (ANF) in bitstring</em>
+</div>
+<div>
+<br>
+<div id="search-panel">
+<div>
+<input id="bar" type="text" /><br>
+<button type="button" onclick="submit()">Simplify</button>
+</div>
+</div>
+
+<br>
+
+<div id="ans-panel">
+<!-- <p> Expanded Expression</p>
+<math id="given" display="block"> </math> -->
+<p> Bitstring Result </p>
+<math display="block" id="transform"> </math>
+<p> Algebraic Form </p>
+<math display="block" id="variables"> </math>
+<p> Truth Table </p>
+<math display="block" id="encoding"> </math>
+</div>
+
+</div>
+
+</main>
+</body>
+</html>
+<script>
+
+function powerOfTwoBitstringToInt(string) {
+    return parseInt(string, 2);
+}
+
+function intToPowerOfTwoBitstring(num) {
+    // 1. Convert to an unsigned 32-bit binary string
+    const binStr = (num >>> 0).toString(2);
+
+    // 2. Calculate the next closest power of two length
+    const len = Math.max(1, 1 << Math.ceil(Math.log2(binStr.length)));
+
+    // 3. Pad the start of the string with zeros
+    return binStr.padStart(len, '0');
+}
+
+function submit(){
+    var given = powerOfTwoBitstringToInt(document.getElementById('bar').value);
+    console.log(given);
+    var transformed = intToPowerOfTwoBitstring(given);
+    document.getElementById("transform").innerHTML = transformed;
+}
+
+</script>
