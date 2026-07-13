@@ -1,16 +1,15 @@
-
-class FrozenSet extends Set {
-    constructor(iterable) {
-        super(iterable);
-        Object.freeze(this);
-    }
-}
-
 class BitwiseRecursiveParser {
-    constructor(expr_string) {
+    constructor(expr_string, encoding) {
         let token_pattern = /[a-zA-Z][a-zA-Z0-9]*|\d+|[\+\(\)]/i;
         if(token_pattern.test(expr_string)){
                 this.tokens = expr_string;
+                this.table = new Map();
+                for(const code of encoding){
+                    this.table.set(code[0],code[1]);
+                    this.table.set(code[1],code[0]);
+                }
+                console.log("Encoding table");
+                console.log(this.table);
         }
         this.pos = 0;
     }
@@ -48,23 +47,12 @@ class BitwiseRecursiveParser {
 
         }else if(token && /[a-zA-Z0-9]+$/i.test(token)) {
             let v = this.consume();
-            // Wrap a single term inside a frozen set, and place it in the main set
-            // TODO: add encoding to turn all expressions into integer codes
-            if(/\d+/i.test(v)) {
-                return new FrozenSet([v]); // numeric literal
+            // Translate the terms into integers by encoding
+            while(this.peek() && /[a-zA-Z]/i.test(this.peek())){
+                let next_v = this.consume();
+                v += next_v;
             }
-            else{
-                // accept two or more letters
-                let new_list = [v];
-                while(this.peek() && /[a-zA-Z]+$/i.test(this.peek())){
-                    let new_token = this.consume();
-                    new_list.push(new_token);
-                }
-                console.log("Variable list: ")
-                console.log(new_list)
-                return new FrozenSet([new_list.join("")]); // string variable
-            }
-
+            return [this.table.get(v)]; // token as integer
         }
 
         throw new Error(`Unexpected token in factor evaluation: ${token}`);
@@ -78,28 +66,43 @@ class BitwiseRecursiveParser {
         console.log(poly1);
         console.log("Poly2 before XOR");
         console.log(poly2);
-        // TODO: use counting to eliminate terms which has an even frequency
-        return poly1.symmetricDifference(poly2);
+
+        // encode: i -> 2**i for p1 and p2 numbers
+        let p1 = poly1.map(num => BigInt(1 << (num+1)));
+        let p2 = poly2.map(num => BigInt(1 << (num+1)));
+        let p = p1.concat(p2);
+
+        let bigXorResult = BigInt(0);
+        for(const n of p){
+            bigXorResult ^= n;
+        }
+
+        // decode result back to integers
+        let result = [];
+        let i = 0;
+        while(bigXorResult > 0){
+            let num = i * Number(bigXorResult % 2n);
+            if(num > 0) { result.push(num-1); }
+            i++;
+            bigXorResult = bigXorResult / 2n;
+        }
+        console.log("XOR Result");
+        console.log(result);
+        return result;
     }
 
     bitwise_or_polynomials(poly1, poly2){
         /* Implements Bitwise OR (Multiplication distribution).
            Every sub-term is combined using set union (since A OR B handles idempotency).*
          */
-        let result = new Set();
+        let result = [];
         console.log("Poly1 before OR");
         console.log(poly1);
         console.log("Poly2 before OR");
         console.log(poly2);
-        // TODO: use bitwise OR to integers to eliminate redundancies due to exponents
         for(let term1 of poly1){
             for(let term2 of poly2){
-                // Set union handles bitwise OR combination perfectly
-                // e.g., frozenset(['A']) | frozenset(['B']) -> frozenset(['A', 'B'])
-                let new_set = new Set();
-                if(term1 !== '1' && !term2.match(term1) ){ new_set.add(term1); }
-                if(term2 !== '1' && !term1.match(term2) ){ new_set.add(term2); }
-                if(new_set.size > 0) { result.add(new_set); }
+                result.push(term1 | term2);
             }
         }
         return result;
@@ -145,25 +148,25 @@ class BitwiseRecursiveParser {
         return result;
     }
 
-    static format_output(poly_set) {
+    get_table(){
+        return this.table;
+    }
+
+    static format_output(poly_set, table) {
         // Formats the internal sets back to a readable string using standard operators.
         if(poly_set.size === 0) {
             return "0";
         }
 
         let term_strings = [];
-
-        for(let term of poly_set){
-            let sorted_elements = Array.from(term).sort();
-            // keep terms adjacent, i.e. ad, bc, def
-            let term_str = [];
-            term_str = sorted_elements.join("");
-            term_strings.push(term_str);
+        let sorted_strings = [];
+        // decode back the result
+        for(const n of poly_set){
+            term_strings.push(table.get(n));
         }
-
-        // sort the terms for XOR
-        term_strings = term_strings.sort();
-        return term_strings.join("+");
+        // sort items
+        sorted_strings = term_strings.sort();
+        return sorted_strings.join("+");
     }
 }
 
