@@ -105,7 +105,7 @@ class BitwiseRecursiveParser {
                 result.push(term1 | term2);
             }
         }
-        return result;
+        return this.bitwise_xor_polynomials(result,[]);
     }
 
 
@@ -165,7 +165,8 @@ class BitwiseRecursiveParser {
             term_strings.push(table.get(n));
         }
         // sort items
-        sorted_strings = term_strings.sort();
+        sorted_strings = term_strings.toSorted(
+            (a, b) => a.length - b.length || a.localeCompare(b));
         return sorted_strings.join("+");
     }
 }
