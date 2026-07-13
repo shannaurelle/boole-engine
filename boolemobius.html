@@ -157,13 +157,13 @@ function boole_mobius_transform(bitarray){
 function submit(){
     var given = powerOfTwoBitstringToInt(document.getElementById('bar').value);
     console.log(given);
-    var transformed = boole_mobius_transform(given);
+    var transformed = intToPowerOfTwoBitstring(boole_mobius_transform(given));
     console.log("Transformed:")
     console.log(transformed);
     // Example for 3 variables (8x8 matrix)
     const mobiusMatrix = generateBooleMobiusMatrix(3);
     console.log(mobiusMatrix.map(row => row.join(" ")).join("\n"));
-    document.getElementById("transform").innerHTML = intToPowerOfTwoBitstring(transformed);
+    document.getElementById("transform").innerHTML = transformed.replaceAll(",","");
 }
 
 </script>
