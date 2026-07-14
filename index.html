@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width">
 <style>
 body{
     background-color: #c2e6b0;
     font-family: Verdana, Arial. sans-serif;
+    text-align: center;
 }
 main,body{
     display: flex;
     justify-content: center;
     align-items: center;
 }
-h1,p{
-    text-align: center;
-}
 #ans-panel{
-    width: 210px;
-    height: 1280px;
-    border: 2px dashed black;
-    border-radius: 12px;
-    padding: 1em;
+    width: 256px;
+    padding: 0.5em;
 }
 input{
     width:230px;
@@ -40,16 +37,17 @@ a{
     color: gray;
 }
 </style>
+</head>
 
 <body>
 
-<main style="width: 250px;">
+<main>
 
 <div>
+
 <h1> Boole Engine </h1>
 
 <div> <em> Write the <a href="exprhelp.html">expression</a> to simplify below </em> </div>
-
 
 <br>
 
@@ -58,6 +56,7 @@ a{
 <br>
 
 <div>
+
 <input id="bar" type="text" />
 <br>
 <button type="button" onclick="submit()">Simplify
@@ -101,6 +100,8 @@ console.log("Structure:");
 console.log(result);
 var simplifiedExpression = render_math(BitwiseRecursiveParser.format_output(result,table));
 document.getElementById('simple').innerHTML = simplifiedExpression;
+
+document.getElementById('encoding').textContent = '';
 document.getElementById('encoding').appendChild(generate_encoding_table(encoding));
 
 }

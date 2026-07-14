@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+<style>
+body{
+    background-color: #c2e6b0;
+    font-family: Verdana, Arial. sans-serif;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h1,h2,td,th{
+    text-align: center;
+}
+p{
+    text-align: justify
+}
+td,th{
+    padding: 1em;
+}
+table{
+    border-collapse: collapse;
+}
+th{
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+#ans-panel{
+    min-width: 220px;
+    max-width: 80ch;
+}
+a{
+    text-decoration: none;
+    color: gray;
+}
+</style>
+</head>
+<body>
+<div id="ans-panel">
+<h1> Bitstring for <a href="boolemobius.html">Boole-Mobius Transform</a></h1>
+<h2> Forming the Bitstring from Truth Tables </h2>
+<p> The bitstring for a truth table must have
+its first chracter as the first result from the first row,
+second character as the second result from the second row, and so on.
+</p>
+<table>
+<thead>
+<tr>
+<th>p</th>
+<th>q</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p> From this example table above, the bitstring is
+<strong>0101</strong> because the value from the first row on the result
+column is 0, second row is 1, third row is 0, and the fourth row is 1.
+</p>
+
+
+<div>
+<h2> Forming the Bitstring from an Expression </h2>
+<p> Get the encoding table of the simplified expression
+by inserting the expression in the <a href="index.html">Boole Engine</a>
+and click submit. Then, the first value of the bitstring is 1 if the
+first term in the encoding table is present in the simplified
+expression, and it is 0 otherwise. For the second value of bitstring,
+it is equal to 1 if the second term in the encoding table is present
+in the simplified expression and 0 if otherwise.
+</p>
+</div>
+<p> Let us say we have the expression </p>
+<math display="block"> <msub><mi>p+q</mi></msup> </math>
+<p> Its encoding table is given below </p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Encoding</th>
+<th>Present(1)/Absent(0)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>00</td>
+<td>0</td>
+</tr>
+<tr>
+<td>p</td>
+<td>01</td>
+<td>1</td>
+</tr>
+<tr>
+<td>q</td>
+<td>10</td>
+<td>1</td>
+</tr>
+<tr>
+<td>pq</td>
+<td>11</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p> Reading from the third column, the bitstring is <strong>0110</strong>
+because the value in the first row is 0, the value in
+the second row is 1, the value in the third row is 1, and the value
+in the fourth row is 0.
+</div>
+</body>
+</html>
