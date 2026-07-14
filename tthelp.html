@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+<style>
+body{
+    background-color: #c2e6b0;
+    font-family: Verdana, Arial. sans-serif;
+}
+main,body,.table-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h1,p{
+    text-align: center;
+}
+#ans-panel{
+    min-width: 220px;
+    max-width: 80ch;
+}
+a{
+    text-decoration: none;
+    color: gray;
+}
+td,th{
+    padding: 1em;
+}
+table{
+    border-collapse: collapse;
+}
+th{
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+</style>
+</head>
+<body>
+<div id="ans-panel">
+<h1> Truth Table </h1>
+<p> The truth table of an <a href="exprhelp.html">expression</a>
+have the following rules in this context </p>
+<ol>
+<li> The first column contains all the possible value of the inputs
+expressed in a bitstring where the first letter has its value
+on the first number on the bitstring, second letter on the
+second number on the bitstring, and so on. </li>
+<li> The number on the result column is the value if the whole <a href="exprhelp.html">expression</a>
+is evaluated based on the input bitstring at the same row. </li>
+<li> 1 means true and 0 means false</li>
+</ol>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>p</th>
+<th>q</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p> For example, in the given truth table there are four readings
+based on the four rows above. Note that row 1 starts just after
+the header which has the column names p, q, and result.</p>
+<ul>
+<li> Row 1: if p is false and q is false, then the result is false. </li>
+<li> Row 2: if p is false and q is true, then the result is true. </li>
+<li> Row 3: if p is true and q is false, then the result is true. </li>
+<li> Row 4: if p is true and q is true, then the result is true. </li>
+</ul>
+</div>
+</body>
+</html>

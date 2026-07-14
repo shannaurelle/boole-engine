@@ -7,7 +7,7 @@ body{
     background-color: #c2e6b0;
     font-family: Verdana, Arial. sans-serif;
 }
-body{
+body,.table-container{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +19,7 @@ p{
     text-align: justify
 }
 td,th{
-    padding: 1em;
+    padding: 0.5em;
 }
 table{
     border-collapse: collapse;
@@ -42,41 +42,38 @@ a{
 <div id="ans-panel">
 <h1> Bitstring for <a href="boolemobius.html">Boole-Mobius Transform</a></h1>
 <h2> Forming the Bitstring from Truth Tables </h2>
-<p> The bitstring for a truth table must have
+<p> The bitstring for a <a href="tthelp.html">truth table</a> must have
 its first chracter as the first result from the first row,
 second character as the second result from the second row, and so on.
 </p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th>p</th>
-<th>q</th>
+<th>pq</th>
 <th>result</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<td>1</td>
-<td>0</td>
+<td>00</td>
 <td>0</td>
 </tr>
 <tr>
+<td>01</td>
 <td>1</td>
-<td>1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
 <td>1</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p> From this example table above, the bitstring is
 <strong>0101</strong> because the value from the first row on the result
 column is 0, second row is 1, third row is 0, and the fourth row is 1.
@@ -87,16 +84,17 @@ column is 0, second row is 1, third row is 0, and the fourth row is 1.
 <h2> Forming the Bitstring from an Expression </h2>
 <p> Get the encoding table of the simplified expression
 by inserting the expression in the <a href="index.html">Boole Engine</a>
-and click submit. Then, the first value of the bitstring is 1 if the
-first term in the encoding table is present in the simplified
-expression, and it is 0 otherwise. For the second value of bitstring,
-it is equal to 1 if the second term in the encoding table is present
-in the simplified expression and 0 if otherwise.
+and click submit. Then, to form the bitstring from the encoding, write the
+first bit of the bitstring as 1 if the first term in the encoding
+table is present in the simplified expression, and it is 0 otherwise.
+For the second bit of bitstring, it is equal to 1 if the second term
+in the encoding table is present in the simplified expression and 0 if otherwise.
 </p>
 </div>
 <p> Let us say we have the expression </p>
 <math display="block"> <msub><mi>p+q</mi></msup> </math>
 <p> Its encoding table is given below </p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -132,6 +130,17 @@ in the simplified expression and 0 if otherwise.
 because the value in the first row is 0, the value in
 the second row is 1, the value in the third row is 1, and the value
 in the fourth row is 0.
+</div>
+<h2> Transforming Truth Table bistring to ANF bitstring and vice versa </h2>
+<p> This is done by creating the Boole-Mobius transform matrix and multiplying
+the bitstring as a vector to the Boole-Mobius transform matrix. In the source
+code upon inspection, the Boole-Mobius transform matrix is created as a
+<math display="inline"><msup><mi>2</mi><mn>n</mn></msup></math>
+by
+<math display="inline"><msup><mi>2</mi><mn>n</mn></msup></math>
+matrix where n is the number of variables and the values are populated with
+this simple rule: if the logical AND of row i and column j is equal to i,
+then the value at row i and column j is 1, and 0 otherwise. </p>
 </div>
 </body>
 </html>
