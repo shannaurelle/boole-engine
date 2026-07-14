@@ -68,8 +68,8 @@ class BitwiseRecursiveParser {
         console.log(poly2);
 
         // encode: i -> 2**i for p1 and p2 numbers
-        let p1 = poly1.map(num => BigInt(1 << (num+1)));
-        let p2 = poly2.map(num => BigInt(1 << (num+1)));
+        let p1 = poly1.map( (num) => BigInt(1n) << BigInt(num+1) );
+        let p2 = poly2.map( (num) => BigInt(1n) << BigInt(num+1) );
         let p = p1.concat(p2);
 
         let bigXorResult = BigInt(0);
@@ -80,9 +80,10 @@ class BitwiseRecursiveParser {
         // decode result back to integers
         let result = [];
         let i = 0;
-        while(bigXorResult > 0){
-            let num = i * Number(bigXorResult % 2n);
-            if(num > 0) { result.push(num-1); }
+        while (bigXorResult > 0n) {
+            if (bigXorResult % 2n === 1n) {
+                result.push(i - 1);
+            }
             i++;
             bigXorResult = bigXorResult / 2n;
         }
