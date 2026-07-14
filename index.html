@@ -89,15 +89,15 @@ function submit(){
 var given = document.getElementById('bar').value;
 var unique_variables = unique_letters(given);
 document.getElementById("variables").innerHTML = unique_variables;
-console.log(given);
+//console.log(given);
 
 var encoding = generate_encoding(unique_variables);
 var expression = new BitwiseRecursiveParser(remove_exponent(given),encoding);
 var result = expression.parse();
 var table = expression.get_table();
 
-console.log("Structure:");
-console.log(result);
+//console.log("Structure:");
+//console.log(result);
 var simplifiedExpression = render_math(BitwiseRecursiveParser.format_output(result,table));
 document.getElementById('simple').innerHTML = simplifiedExpression;
 

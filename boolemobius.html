@@ -130,7 +130,7 @@ function generateTerm(bitstring,encoding){
 
 function submit(){
     var given = toBitarray(document.getElementById('bar').value);
-    console.log(given);
+    //console.log(given);
     var transformed = toBitstring(boole_mobius_transform(given));
     var tstring = transformed.replaceAll(",","");
     document.getElementById("transform").innerHTML = tstring;

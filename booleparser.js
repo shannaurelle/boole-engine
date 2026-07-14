@@ -8,8 +8,8 @@ class BitwiseRecursiveParser {
                     this.table.set(code[0],code[1]);
                     this.table.set(code[1],code[0]);
                 }
-                console.log("Encoding table");
-                console.log(this.table);
+                //console.log("Encoding table");
+                //console.log(this.table);
         }
         this.pos = 0;
     }
@@ -25,8 +25,8 @@ class BitwiseRecursiveParser {
 
     consume(expected="None") {
         let token = this.peek();
-        console.log("Token consumed:");
-        console.log(token);
+        //console.log("Token consumed:");
+        //console.log(token);
         if(expected !== "None" && token != expected){
             throw new Error(`Expected ${expected}, got ${token}`);
         }
@@ -37,8 +37,8 @@ class BitwiseRecursiveParser {
     factor() {
         // factor -> '(' expr ')' | VARIABLE | CONSTANT
         let token = this.peek();
-        console.log("Token received:");
-        console.log(token);
+        //console.log("Token received:");
+        //console.log(token);
         if(token === '('){
             this.consume('(');
             let result = this.expr();
@@ -62,10 +62,10 @@ class BitwiseRecursiveParser {
         /* Implements Bitwise XOR (Addition).
           In XOR logic, A + A = 0. Symmetric difference clears out duplicates.*
         */
-        console.log("Poly1 before XOR");
-        console.log(poly1);
-        console.log("Poly2 before XOR");
-        console.log(poly2);
+        //console.log("Poly1 before XOR");
+        //console.log(poly1);
+        //console.log("Poly2 before XOR");
+        //console.log(poly2);
 
         // encode: i -> 2**i for p1 and p2 numbers
         let p1 = poly1.map( (num) => BigInt(1n) << BigInt(num+1) );
@@ -87,8 +87,8 @@ class BitwiseRecursiveParser {
             i++;
             bigXorResult = bigXorResult / 2n;
         }
-        console.log("XOR Result");
-        console.log(result);
+        //console.log("XOR Result");
+        //console.log(result);
         return result;
     }
 
@@ -97,10 +97,10 @@ class BitwiseRecursiveParser {
            Every sub-term is combined using set union (since A OR B handles idempotency).*
          */
         let result = [];
-        console.log("Poly1 before OR");
-        console.log(poly1);
-        console.log("Poly2 before OR");
-        console.log(poly2);
+        //console.log("Poly1 before OR");
+        //console.log(poly1);
+        //console.log("Poly2 before OR");
+        //console.log(poly2);
         for(let term1 of poly1){
             for(let term2 of poly2){
                 result.push(term1 | term2);
@@ -113,17 +113,17 @@ class BitwiseRecursiveParser {
     term() {
         // term -> factor (factor)*  (Implicit juxtaposition means Bitwise OR)
         let result = this.factor();
-        console.log("term() result: ");
-        console.log(result);
+        //console.log("term() result: ");
+        //console.log(result);
         while(this.peek() && (this.peek() === '(' || /[a-zA-Z0-9]+$/i.test(this.peek()) ) ){
             let next_factor = this.factor();
-            console.log("Next factor:");
-            console.log(next_factor);
-            console.log("Result before bitwise or: ");
-            console.log(result);
+            //console.log("Next factor:");
+            //console.log(next_factor);
+            //console.log("Result before bitwise or: ");
+            //console.log(result);
             result = this.bitwise_or_polynomials(result, next_factor);
-            console.log("term() bitwise or Result:")
-            console.log(result);
+            //console.log("term() bitwise or Result:")
+            //console.log(result);
         }
         return result;
     }
@@ -131,8 +131,8 @@ class BitwiseRecursiveParser {
     expr() {
         // expr -> term ('+' term)*  (Where '+' means Bitwise XOR)
         let result = this.term();
-        console.log("expr() result: ");
-        console.log(result);
+        //console.log("expr() result: ");
+        //console.log(result);
         while(this.peek() === '+'){
             this.consume("+");
             let next_term = this.term();
