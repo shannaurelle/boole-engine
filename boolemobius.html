@@ -19,8 +19,6 @@ h1,p, em{
 #ans-panel{
     width: 100%;
     height: 1280px;
-    border: 2px dashed black;
-    border-radius: 12px;
     padding: 1em;
 }
 #search-panel{
@@ -45,6 +43,13 @@ button,input{
 td,th{
     padding: 0.5em;
     text-align: center;
+}
+th{
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+table{
+    border-collapse: collapse;
 }
 a{
     text-decoration: none;
@@ -81,9 +86,9 @@ a{
 <p> Bitstring Result </p>
 <math display="block" id="transform"> </math>
 <p> Algebraic Form </p>
-<math display="block" id="variables"> </math>
+<math display="block" id="expression"> </math>
 <p> Truth Table </p>
-<math display="block" id="encoding"> </math>
+<math display="block" id="truthtable"> </math>
 </div>
 
 </div>
@@ -96,18 +101,52 @@ a{
 <script src="boolemobiustransform.js"></script>
 <script>
 
+function generateLetters(n) {
+  // Return early if requested size exceeds the English alphabet
+  if (n > 26) {
+    throw new RangeError("Size 'n' cannot be greater than 26 for unique lowercase letters.");
+  }
+
+  const letters = new Set();
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  while (letters.size < n) {
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    letters.add(alphabet[randomIndex]);
+  }
+
+  return Array.from(letters).join("");
+}
+
+function generateTerm(bitstring,encoding){
+    let terms = [];
+    for(let i=0; i < encoding.length; i++){
+        if(bitstring[i]==="1"){
+            terms.push(encoding[i][0]);
+        }
+    }
+    return terms.join("+");
+}
+
 function submit(){
-    // TODO: make functions for algebraic normal form of a bitstring
-    // TODO: make truth table for the bitstring
-    var given = powerOfTwoBitstringToInt(document.getElementById('bar').value);
+    var given = toBitarray(document.getElementById('bar').value);
     console.log(given);
-    var transformed = intToPowerOfTwoBitstring(boole_mobius_transform(given));
-    console.log("Transformed:")
-    console.log(transformed);
-    // Example for 3 variables (8x8 matrix)
-    const mobiusMatrix = generateBooleMobiusMatrix(3);
-    console.log(mobiusMatrix.map(row => row.join(" ")).join("\n"));
-    document.getElementById("transform").innerHTML = transformed.replaceAll(",","");
+    var transformed = toBitstring(boole_mobius_transform(given));
+    var tstring = transformed.replaceAll(",","");
+    document.getElementById("transform").innerHTML = tstring;
+
+    const variables = generateLetters( parseInt(given.toReversed().join(""),2 ));
+    const encoding = generate_encoding(variables.split("").join(","));
+    const input = encoding[variables.length-1][0];
+    const header = [input,"Result"];
+    const n = Math.floor(Math.log2(given.length));
+    const data = Array.from({ length: 2**n }, (_, i) =>
+                [i.toString(2).padStart(n,"0"), tstring[i]]);
+    const table = generate_table(data,header);
+    document.getElementById("truthtable").textContent = '';
+    document.getElementById("truthtable").appendChild(table);
+    const expr = generateTerm(tstring,encoding);
+    document.getElementById("expression").innerHTML = render_math(expr);
 }
 
 </script>

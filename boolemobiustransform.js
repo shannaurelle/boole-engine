@@ -1,4 +1,4 @@
-function powerOfTwoBitstringToInt(string) {
+function toBitarray(string) {
     let n = string.length;
     let result = [];
     for(let i=0; i < n; i++){
@@ -7,7 +7,7 @@ function powerOfTwoBitstringToInt(string) {
     return result;
 }
 
-function intToPowerOfTwoBitstring(bitarray) {
+function toBitstring(bitarray) {
     return bitarray.join("");
 }
 

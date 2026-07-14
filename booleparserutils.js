@@ -123,7 +123,7 @@ function generate_encoding(string){
 
 // this function expects a string composed
 // of letters separated by commas
-function generate_encoding_table(encoding){
+function generate_table(encoding,header=["Term","Encoding"]){
 const table = document.createElement("table");
 const thead = document.createElement("thead");
 const tbody = document.createElement("tbody");
@@ -134,8 +134,8 @@ if(encoding.length > 0){
     const tr_h     = document.createElement("tr");
     const th_name  = document.createElement("th");
     const th_val   = document.createElement("th");
-    th_name.textContent = "Term";
-    th_val.textContent = "Encoding";
+    th_name.textContent = header[0];
+    th_val.textContent = header[1];
     tr_h.appendChild(th_name);
     tr_h.appendChild(th_val);
     thead.appendChild(tr_h);
