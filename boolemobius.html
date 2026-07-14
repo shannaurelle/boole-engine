@@ -135,17 +135,18 @@ function submit(){
     var tstring = transformed.replaceAll(",","");
     document.getElementById("transform").innerHTML = tstring;
 
-    const variables = generateLetters( parseInt(given.toReversed().join(""),2 ));
-    const encoding = generate_encoding(variables.split("").join(","));
-    const input = encoding[variables.length-1][0];
-    const header = [input,"Result"];
     const n = Math.floor(Math.log2(given.length));
+    const variables = generateLetters(n);
+    const encoding = generate_encoding(variables.split("").join(","));
+    const expr = generateTerm(tstring,encoding);
+    const input = encoding[encoding.length-1][0];
+    const header = [input.split('').reverse('').join(''),expr];
     const data = Array.from({ length: 2**n }, (_, i) =>
                 [i.toString(2).padStart(n,"0"), tstring[i]]);
     const table = generate_table(data,header);
     document.getElementById("truthtable").textContent = '';
     document.getElementById("truthtable").appendChild(table);
-    const expr = generateTerm(tstring,encoding);
+
     document.getElementById("expression").innerHTML = render_math(expr);
 }
 
