@@ -127,7 +127,8 @@ function generateTerm(bitstring,encoding){
 }
 
 function submit(){
-    var given = toBitarray(document.getElementById('bar').value);
+    var given_string = document.getElementById('bar').value
+    var given = toBitarray(given_string);
     //console.log(given);
     var transformed = toBitstring(boole_mobius_transform(given));
     var tstring = transformed.replaceAll(",","");
@@ -137,8 +138,9 @@ function submit(){
     const variables = generateLetters(n);
     const encoding = generate_encoding(variables.split("").join(","));
     const expr = generateTerm(tstring,encoding);
+    const result = generateTerm(given_string,encoding);
     const input = encoding[encoding.length-1][0];
-    const header = [input.split('').reverse('').join(''),expr];
+    const header = [input.split('').reverse('').join(''),result];
     const data = Array.from({ length: 2**n }, (_, i) =>
                 [i.toString(2).padStart(n,"0"), tstring[i]]);
     const table = generate_table(data,header);
