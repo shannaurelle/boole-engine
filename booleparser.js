@@ -154,12 +154,13 @@ class BitwiseRecursiveParser {
     }
 
     static format_output(poly_set, table) {
+        let term_strings = [];
+
         // Formats the internal sets back to a readable string using standard operators.
-        if(poly_set.size === 0) {
-            return "0";
+        if(poly_set.length === 0) {
+            return '0';
         }
 
-        let term_strings = [];
         let sorted_strings = [];
         // decode back the result
         for(const n of poly_set){

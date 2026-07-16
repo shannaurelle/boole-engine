@@ -11,10 +11,11 @@ mathElement.setAttribute("display", "block"); // Blocks display on a new line
 
 // for each string, just convert them to MathML
 var count = 0;
+
 for(str of strings){
 
     const raw_expr = str.replace("^","");
-    const monomial = /[a-zA-Z]?[1-9][0-9]*/g;
+    const monomial = /[a-zA-Z]?[0-9]+/g;
     var monomials  = raw_expr.match(monomial);
     var terms      = [];
 
